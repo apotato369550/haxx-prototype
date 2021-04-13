@@ -8,6 +8,5 @@ function App() {
 }
 
 export default App;
-// delete unecessary files
-// draw out project structure
-// create git repository
+// copy hacker bootstrap theme
+// create console and terminal modules
