@@ -66,10 +66,12 @@ function commandHandler(sender, arguments){
         return print;
     } else if(mainArgument.toLowerCase() == "register"){ 
         // do this shit
+        // are these two switched??
+        // this is wrong lmao
         let username = arguments[1];
-        let password = arguments[0];
+        let password = arguments[2];
 
-        if(username == "" || username == undefined || password == "" || password == undefined){
+        if(!username || !password){
             return "Please enter a valid username and password"
         } else {
             // learn to see if username and password already exist
@@ -101,7 +103,32 @@ function commandHandler(sender, arguments){
             )
         }
     } else if(mainArgument.toLowerCase() == "login"){
+        const username = arguments[1];
+        const password = arguments[2];
+
+        if(username && password){
+            db.query(
+                "SELECT * FROM users WHERE username=?",
+                [username, password],
+                (err, result) => {
+                    if(err){
+                        console.log("Error: " + err);
+                        return "An error has occurred.";
+                    }
+
+                    if(!result){
+                        return "We could not find an account with that username";
+                    }
+
+                    // get result's password and compare
+                }
+            )
+        }
+
+        return "Username: " + username + " Password: " + password;
         // do this shit
+        // work on this
+        // idk what to do with this
     } else {
         return "Invalid command, please enter a valid command. Command given: " + mainArgument;
     }

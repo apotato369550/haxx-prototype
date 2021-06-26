@@ -3,6 +3,10 @@ import './css/neon-glow-theme.css';
 import './App.css';
 import Prompt from './components/prompt';
 import Terminal from './components/terminal';
+import Axios from 'axios';
+
+// implement account creation system
+// review code here
 
 function App() {
   const [inputCommand, setInputCommand] = useState("");

@@ -1,7 +1,10 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 
 // add stuff here
-const Prompt = ({hello, sayHello, commands, setCommands, inputCommand, setInputCommand}) => {
+const Prompt = ({ commands, setCommands, inputCommand, setInputCommand }) => {
+
+    // temporary ^^^
 
     const commandHandler = (event) => {
         console.log("eyy command handler " + event.target.value);
@@ -14,13 +17,38 @@ const Prompt = ({hello, sayHello, commands, setCommands, inputCommand, setInputC
     const submitHandler = (event) => {
         event.preventDefault();
         console.log(event + "eyy submit handler woot woots");
-        // this should empty the input
         setInputCommand("");
-        setCommands([
-            ...commands,
-            {text: inputCommand, id: Math.random() * 100}
-        ])
-        // add stuff here
+        // watch all three videos on how to make http requests
+        
+        // learn to make a regular post request
+        // learn from another tutorial on how to make a post request
+        // start a subproject
+        // response.data
+        // work out a basic print command
+        // throw an error if no keywords are detected
+        // send user as well hereVVV 
+
+        // send session and cookies information here as well
+        // learn about sessions and cookies from video
+        // create subproject about dealing with sessions and cookies
+        // can't concentrate right now 
+
+        // install and learn how to use express-sessions
+        // learn about and watch the vid toms
+
+        // found a valid express-session tutorial
+        // follow that and create another subproject
+        axios.post("http://localhost:3001/command", {
+            command: inputCommand
+        }).then((response) => {
+            alert("wut")
+            console.log(response);
+            setCommands([
+                ...commands,
+                {text: inputCommand, id: Math.random() * 100},
+                {text: response.data, id: Math.random() * 100}
+            ])
+        }).catch(error => alert("An error occured..."))
         return;
     }
     // do this
@@ -35,14 +63,17 @@ const Prompt = ({hello, sayHello, commands, setCommands, inputCommand, setInputC
                 aria-describedby="basic-addon1"
                 value={inputCommand}
                 onChange={commandHandler}
-
             />
         </div>
     )
 }
 
-// convert terminal to stateless
-// figure out how to alert input
+// ohhhh
+// delete everything from the other project
+// create a table for haxx database lmao
+// re-do everything
+// include a post request in the form
+// do this tomorrow
 
 export default Prompt;
 
