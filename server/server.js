@@ -101,6 +101,8 @@ function commandHandler(sender, arguments){
                     console.log(err);
                 }
             )
+
+            return "Register successful.";
         }
     } else if(mainArgument.toLowerCase() == "login"){
         const username = arguments[1];
@@ -120,12 +122,34 @@ function commandHandler(sender, arguments){
                         return "We could not find an account with that username";
                     }
 
+                    console.log("Result: " + result);
+
                     // get result's password and compare
+                    // figure this out tomorrow
+                    // convert result to json
+                    // ohhh it returns as an object
+                    // i can't think right now i'm sorry
+
+                    let userPassword = result[0].password;
+
+                    if(password == userPassword){
+                        // req is not defined??
+                        // set a session variable herer
+                        // why is req not defined??
+                        // i might have to restructure everything here...
+
+                        // req is not a parameter that's why
+                        // re-structure command route and command function
+                        req.session.userId = result[0].id;
+                        
+                    } else {
+                        return "Incorrect password.";
+                    }
                 }
             )
         }
 
-        return "Username: " + username + " Password: " + password;
+        return "Successful Login. Username: " + username + " Password: " + password;
         // do this shit
         // work on this
         // idk what to do with this
@@ -163,13 +187,29 @@ app.post("/command", (req, res) => {
         "INSERT INTO command_log (username, command, status) VALUES (?, ?, ?)",
         param,
         (err, result) => {
+            /*
             if(err){
                 console.log(err);
             } else {
                 res.send(commandHandler("apotato369", tokens));
             }
+            */
+            if(err){
+                console.log(err);
+            }
         }
     )
+
+    const username = "apotato369";
+    const arguments = command.split("").slice(1);
+    
+    if(arguments.length == 0){
+        return "Empty argument. Please use commands like this: '<command> <argument1> <argument2'";
+    }
+
+    let mainArgument = arguments[0];
+    // continue here
+
     // this does not work
 })
 
