@@ -47,6 +47,7 @@ const requirePerms = (req, res, next) => {
 
 // make middleware that says if user is logged in
 
+/*
 function commandHandler(sender, arguments){
 
     if(arguments.length <= 0){
@@ -71,39 +72,7 @@ function commandHandler(sender, arguments){
         let username = arguments[1];
         let password = arguments[2];
 
-        if(!username || !password){
-            return "Please enter a valid username and password"
-        } else {
-            // learn to see if username and password already exist
-
-            db.query(
-                "SELECT * FROM users WHERE username=?",
-                [username],
-                (err, result) => {
-                    if(err){
-                        console.log(err);
-                        return "An error has occurred: " + err;
-                    }
-
-                    console.log("Result: " + result);
-
-                    if(result){
-                        return "This username is already in use. Please enter a different username."
-                    } 
-                }
-            )
-            // IT WORKS!!
-
-            db.query(
-                "INSERT INTO users (username, password) VALUES (?, ?)",
-                [username, password],
-                (err, result) => {
-                    console.log(err);
-                }
-            )
-
-            return "Register successful.";
-        }
+        
     } else if(mainArgument.toLowerCase() == "login"){
         const username = arguments[1];
         const password = arguments[2];
@@ -157,6 +126,7 @@ function commandHandler(sender, arguments){
         return "Invalid command, please enter a valid command. Command given: " + mainArgument;
     }
 }
+*/
 
 // work on this now
 // work on this toms
@@ -165,7 +135,7 @@ function commandHandler(sender, arguments){
 // draw one out
 
 app.post("/command", (req, res) => {
-    const command = req.body.command;
+    let command = req.body.command;
     const tokens = command.split(" ");
     const { userId } = req.session;
 
@@ -200,16 +170,123 @@ app.post("/command", (req, res) => {
         }
     )
 
-    const username = "apotato369";
-    const arguments = command.split("").slice(1);
+    const sender = "apotato369";
+    const arguments = command.split(" ");
     
     if(arguments.length == 0){
-        return "Empty argument. Please use commands like this: '<command> <argument1> <argument2'";
+        res.send("Empty argument. Please use commands like this: '<command> <argument1> <argument2'");
+        return;
     }
 
-    let mainArgument = arguments[0];
-    // continue here
+    command = arguments[0].toLowerCase();
 
+    // convert to if-else?
+
+    if(command == "print"){
+        if(sender == null){
+            res.send("You do not have access to this command");
+            return;
+        }
+        let text = "";
+        for(let i = 1; i < tokens.length; i++){
+            text += tokens[i] + " ";
+        }
+        res.send(text);
+        return;
+
+    } else if(command == "register"){
+        let username = tokens[1];
+        let password = tokens[2];
+
+        if(!username || !password){
+            res.send("Please enter a valid username and password");
+            return
+        } else {
+            // learn to see if username and password already exist
+
+            db.query(
+                "SELECT * FROM users WHERE username=?",
+                [username],
+                (err, result) => {
+                    if(err){
+                        console.log(err);
+                        res.send("An error has occured: " + err);
+                        return;
+                    }
+
+                    console.log("Result: " + result);
+
+                    if(result){
+                        res.send("This username is already in use. Please enter a different username.")
+                        return
+                    } 
+                }
+            )
+            // IT WORKS!!
+
+            db.query(
+                "INSERT INTO users (username, password) VALUES (?, ?)",
+                [username, password],
+                (err, result) => {
+                    console.log(err);
+                }
+            )
+            
+            res.send("Register Successful");
+            return;
+        }
+    } else if(command == "login"){
+        let username = tokens[1];
+        let password = tokens[2];
+
+        if(username && password){
+            db.query(
+                "SELECT * FROM users WHERE username=?",
+                [username, password],
+                (err, result) => {
+                    if(err){
+                        console.log("Error: " + err);
+                        res.send("An error has occurred.");
+                        return;
+                    }
+
+                    if(!result){
+                        res.send("We could not find an account with that username");
+                        return;
+                    }
+
+                    console.log("Result: " + result);
+
+                    // get result's password and compare
+                    // figure this out tomorrow
+                    // convert result to json
+                    // ohhh it returns as an object
+                    // i can't think right now i'm sorry
+
+                    let userPassword = result[0].password;
+
+                    if(password == userPassword){
+                        // req is not defined??
+                        // set a session variable herer
+                        // why is req not defined??
+                        // i might have to restructure everything here...
+
+                        // req is not a parameter that's why
+                        // re-structure command route and command function
+                        req.session.userId = result[0].id;
+                        return;
+                    } else {
+                        res.send("Incorrect password.");
+                        return;
+                    }
+                }
+            )
+        }
+    } else {
+        res.send("Please enter a valid command: " + command);
+        return;
+    }
+    // continue here
     // this does not work
 })
 
