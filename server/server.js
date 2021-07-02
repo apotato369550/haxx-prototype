@@ -47,94 +47,19 @@ const requirePerms = (req, res, next) => {
 
 // make middleware that says if user is logged in
 
-/*
-function commandHandler(sender, arguments){
-
-    if(arguments.length <= 0){
-        return "";
-    } 
-    // says its invalid
-    let mainArgument = arguments[0]
-
-    if(mainArgument.toLowerCase() == "print"){
-        if(sender == null){
-            return "You do not have access to this command.";
-        }
-        let print = "";
-        for(let i = 1; i < arguments.length; i++){
-            print += arguments[i];
-        }
-        return print;
-    } else if(mainArgument.toLowerCase() == "register"){ 
-        // do this shit
-        // are these two switched??
-        // this is wrong lmao
-        let username = arguments[1];
-        let password = arguments[2];
-
-        
-    } else if(mainArgument.toLowerCase() == "login"){
-        const username = arguments[1];
-        const password = arguments[2];
-
-        if(username && password){
-            db.query(
-                "SELECT * FROM users WHERE username=?",
-                [username, password],
-                (err, result) => {
-                    if(err){
-                        console.log("Error: " + err);
-                        return "An error has occurred.";
-                    }
-
-                    if(!result){
-                        return "We could not find an account with that username";
-                    }
-
-                    console.log("Result: " + result);
-
-                    // get result's password and compare
-                    // figure this out tomorrow
-                    // convert result to json
-                    // ohhh it returns as an object
-                    // i can't think right now i'm sorry
-
-                    let userPassword = result[0].password;
-
-                    if(password == userPassword){
-                        // req is not defined??
-                        // set a session variable herer
-                        // why is req not defined??
-                        // i might have to restructure everything here...
-
-                        // req is not a parameter that's why
-                        // re-structure command route and command function
-                        req.session.userId = result[0].id;
-                        
-                    } else {
-                        return "Incorrect password.";
-                    }
-                }
-            )
-        }
-
-        return "Successful Login. Username: " + username + " Password: " + password;
-        // do this shit
-        // work on this
-        // idk what to do with this
-    } else {
-        return "Invalid command, please enter a valid command. Command given: " + mainArgument;
-    }
-}
-*/
-
 // work on this now
 // work on this toms
 
 // figure out a working system
 // draw one out
 
-app.post("/command", (req, res) => {
+const redirectSession = (req, res, next) => {
+    console.log("Session's Id: " + req.session.userId);
+    next()
+}
+
+// test this
+app.post(redirectSession, "/command", (req, res) => {
     let command = req.body.command;
     const tokens = command.split(" ");
     const { userId } = req.session;
@@ -157,13 +82,6 @@ app.post("/command", (req, res) => {
         "INSERT INTO command_log (username, command, status) VALUES (?, ?, ?)",
         param,
         (err, result) => {
-            /*
-            if(err){
-                console.log(err);
-            } else {
-                res.send(commandHandler("apotato369", tokens));
-            }
-            */
             if(err){
                 console.log(err);
             }
@@ -174,7 +92,7 @@ app.post("/command", (req, res) => {
     const arguments = command.split(" ");
     
     if(arguments.length == 0){
-        res.send("Empty argument. Please use commands like this: '<command> <argument1> <argument2'");
+        res.send("Empty argument. Please use commands like this: '<command> <argument1> <argument2>'");
         return;
     }
 
@@ -183,6 +101,7 @@ app.post("/command", (req, res) => {
     // convert to if-else?
 
     if(command == "print"){
+        // make this command only accessible to people who are logged in
         if(sender == null){
             res.send("You do not have access to this command");
             return;
@@ -273,7 +192,10 @@ app.post("/command", (req, res) => {
 
                         // req is not a parameter that's why
                         // re-structure command route and command function
+                        console.log("User's ID: " + result[0].id)
                         req.session.userId = result[0].id;
+                        res.send("Logged in Successfully");
+                        console.log(req.session)
                         return;
                     } else {
                         res.send("Incorrect password.");
@@ -282,6 +204,12 @@ app.post("/command", (req, res) => {
                 }
             )
         }
+    } else if("getsesh"){
+        // can't seem to access id variables in session??
+        console.log(req.session);
+        //
+        console.log("User Id" + req.session.userId);
+        return;
     } else {
         res.send("Please enter a valid command: " + command);
         return;
