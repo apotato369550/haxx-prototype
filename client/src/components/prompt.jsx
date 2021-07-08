@@ -33,6 +33,10 @@ const Prompt = ({ commands, setCommands, inputCommand, setInputCommand }) => {
         // create subproject about dealing with sessions and cookies
         // can't concentrate right now 
 
+        // learn about react routers
+        // add routse
+        // continue watching videos about routes
+
         // install and learn how to use express-sessions
         // learn about and watch the vid toms
 

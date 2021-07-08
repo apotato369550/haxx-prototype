@@ -45,21 +45,52 @@ const requirePerms = (req, res, next) => {
     }
 }
 
-// make middleware that says if user is logged in
+// i fucked up here lol
+// ummm
+// i might have to restart the entire thing....
 
-// work on this now
-// work on this toms
-
-// figure out a working system
-// draw one out
-
-const redirectSession = (req, res, next) => {
-    console.log("Session's Id: " + req.session.userId);
-    next()
+const redirectLogin = (req, res, next) => {
+    if(!req.session.userId){
+        res.redirect("/user");
+        // figure this redirect out
+        // i might have to rethink my whole system..
+    } else {
+        next()
+    }
 }
 
-// test this
-app.post(redirectSession, "/command", (req, res) => {
+// session id is still undefined??
+// figure out hwy
+
+// ok i kinda get it...
+// change this redirect session to a redirect login...
+// it's coz of the callback i think
+
+/*
+app.use((req, res, next) => {
+    const { userId } = req.session;
+    if(userId){
+        let user = {};
+        db.query(
+            "SELECT * FROM users WHERE id=?", 
+            userId,
+            (err, result) => {
+                if(err){
+                    console.log(err);
+                    return;
+                }
+                if(result){
+                    user = result;
+                }
+            }
+
+        );
+        res.locals.user = user;
+    }
+})
+*/
+
+app.post("/command", redirectLogin, (req, res) => {
     let command = req.body.command;
     const tokens = command.split(" ");
     const { userId } = req.session;
@@ -216,6 +247,11 @@ app.post(redirectSession, "/command", (req, res) => {
     }
     // continue here
     // this does not work
+})
+
+app.get("/user", redirectLogin, (req, res) => {
+    res.send("Login Successful:))))");
+    // test this??/
 })
 
 // temporary^^^
